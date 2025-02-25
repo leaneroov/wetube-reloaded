@@ -1,41 +1,26 @@
+import "./db.js"
+import "./models/Video.js";
 import express from "express";
 import morgan from "morgan";
+import globalRouter from "./routers/globalRouter.js";
+import videoRouter from "./routers/videoRouter.js";
+import userRouter from "./routers/userRouter.js";
 
-const PORT = 4000;
+console.log(process.cwd());
 
 const app = express();
 const logger = morgan("dev");
+
+app.set("view engine", "pug");
+app.set("views", process.cwd() + "/src/views");
 app.use(logger);
-
-const globalRouter = express.Router();
-
-const handleHome = (req, res) => res.send("Home");
-
-globalRouter.get("/", handleHome);
-
-const userRouter = express.Router();
-
-const handleEditUser = (req, res) => res.send("Edit User");
-
-userRouter.get("/edit", handleEditUser);
-
-const videoRouter = express.Router();
-
-const handleWatchVideo = (req, res) => res.send("Watch Video");
-
-videoRouter.get("/watch", handleWatchVideo);
-
+app.use(express.urlencoded({extended: true}));
 app.use("/", globalRouter);
 app.use("/videos", videoRouter);
 app.use("/users", userRouter);
 
-
-
-const handleListening = () => 
-    console.log(`Server listening on port localhost:${PORT}`); //여기서 ''했음 그러면 안돼!
-
-app.listen(PORT, handleListening) // 외부접속 리슨!
-
+export default app;
 //npm run dev
 
 //ctl + c server end
+//글로벌 컨트롤러는 필요없음.
