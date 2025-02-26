@@ -12,6 +12,7 @@
   "author": "Kang",
   "license": "MIT",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "express": "^4.17.1",
     "mongoose": "^8.10.1",
     "morgan": "^1.10.0",
