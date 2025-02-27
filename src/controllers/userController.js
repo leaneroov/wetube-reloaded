@@ -54,6 +54,8 @@ export const postLogin = async (req, res) => {
       errorMessage: "An account with this username does not exists.",
     });
   }
+  req.session.loggedIn = true;
+  req.session.user = user;
   return res.redirect("/");
 };
 
