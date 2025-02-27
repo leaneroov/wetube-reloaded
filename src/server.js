@@ -1,6 +1,7 @@
 import express from "express";
 import morgan from "morgan";
 import session from "express-session";
+import MongoStore from "connect-mongo";
 import rootRouter from "./routers/rootRouter.js";
 import videoRouter from "./routers/videoRouter.js";
 import userRouter from "./routers/userRouter.js";
@@ -18,9 +19,13 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(
   session({
-    secret: "Heoo!",
-    resave: true,
-    saveUninitialized: true,
+    secret: process.env.COOKIE_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    // cookie: {
+    //   maxAge: 20000, //쿠키 수명
+    // },
+    store: MongoStore.create({ mongoUrl: process.env.DB_URL }),
   })
 );
 
