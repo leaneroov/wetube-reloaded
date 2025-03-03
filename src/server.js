@@ -35,12 +35,14 @@ app.use(
 // });
 
 app.use(localsMiddleware);
+app.use("/uploads", express.static("uploads"));
+app.use("/static", express.static("assets"));
 app.use("/", rootRouter);
 app.use("/videos", videoRouter);
 app.use("/users", userRouter);
 
 export default app;
 //npm run dev
-
+// npm run assets
 //ctl + c server end
 //글로벌 컨트롤러는 필요없음.
