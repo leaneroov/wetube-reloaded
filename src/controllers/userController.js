@@ -1,5 +1,4 @@
 import User from "../models/User";
-import fetch from "node-fetch";
 import bcrypt from "bcrypt";
 
 export const getJoin = (req, res) => res.render("join", { pageTitle: "Join" });
@@ -133,12 +132,22 @@ export const finishGithubLogin = async (req, res) => {
 };
 
 export const logout = (req, res) => {
-  req.session.destroy();
   req.flash("info", "Bye Bye");
-  return res.redirect("/");
+  req.session.user = null;
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Session destruction error:", err);
+      req.flash("error", "Logout failed");
+    }
+    res.redirect("/");
+  });
 };
 
 export const getEdit = (req, res) => {
+  if (!req.session.user) {
+    req.flash("error", "You must be logged in.");
+    return res.redirect("/login");
+  }
   return res.render("edit-profile", {
     pageTitle: "Edit Profile",
     user: req.session.user,
@@ -153,10 +162,15 @@ export const postEdit = async (req, res) => {
     file,
   } = req;
 
+  if (!_id) {
+    req.flash("error", "Invalid user ID");
+    return res.redirect("/");
+  }
+
   const updatedUser = await User.findByIdAndUpdate(
     _id,
     {
-      avatarUrl: file ? file.path : avatarUrl,
+      avatarUrl: file ? file.location : avatarUrl,
       name,
       email,
       username,
